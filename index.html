@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paquet d'Aplicacions de Mehillana</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Google Sans', 'Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <!-- Three.js for 3D Background / Effects -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- FontAwesome icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Google Sans', 'Inter', sans-serif;
+            overflow-x: hidden;
+            background-color: #f8f9fa;
+            color: #202124;
+        }
+
+        #canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* Google-style app grid popup transition */
+        .app-grid-dropdown {
+            transform-origin: top right;
+            transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease;
+        }
+        .app-grid-dropdown.hidden-dropdown {
+            transform: scale(0.9) translateY(-8px);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f3f4;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #dadce0;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #bdc1c6;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-blue-100 selection:text-blue-900 relative">
+
+    <div id="canvas-container"></div>
+
+    <header class="w-full py-4 px-6 md:px-10 z-40 flex items-center justify-between max-w-7xl mx-auto border-b border-gray-200 bg-white/80 backdrop-blur-md sticky top-0">
+        <div class="flex items-center gap-3 cursor-pointer" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+            <div class="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white shadow-sm font-bold text-lg">
+                M
+            </div>
+            <div>
+                <h1 class="text-base md:text-lg font-medium text-gray-800 tracking-tight">
+                    Paquet de Mehillana
+                </h1>
+                <p class="text-[11px] text-gray-500">Ecosistema d'aplicacions</p>
+            </div>
+        </div>
+
+        <!-- Right action menu: Search + Google-style Grid Launcher icon -->
+        <div class="flex items-center gap-4">
+            <div class="relative hidden sm:block w-64 md:w-80">
+                <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-gray-400">
+                    <i class="fa-solid fa-magnifying-glass text-xs"></i>
+                </span>
+                <input type="text" id="searchInput" placeholder="Cerca al paquet..." 
+                    class="w-full pl-9 pr-4 py-2 rounded-full bg-gray-100 border border-transparent text-xs text-gray-800 placeholder-gray-500 focus:outline-none focus:bg-white focus:border-blue-500 focus:shadow-sm transition-all">
+            </div>
+
+            <!-- Google-style 3x3 App Launcher Icon Button -->
+            <div class="relative">
+                <button onclick="toggleAppLauncher()" id="launcherBtn" title="Aplicacions de Mehillana" 
+                    class="w-10 h-10 rounded-full hover:bg-gray-100 flex items-center justify-center text-gray-600 transition-all focus:outline-none">
+                    <i class="fa-solid fa-grip text-base"></i>
+                </button>
+
+                <!-- Workspace Popup Dropdown Menu -->
+                <div id="appLauncherDropdown" class="app-grid-dropdown hidden-dropdown absolute right-0 mt-2 w-80 sm:w-96 bg-white rounded-3xl p-5 shadow-2xl z-50 border border-gray-200">
+                    <div class="flex items-center justify-between pb-3 mb-3 border-b border-gray-100">
+                        <span class="text-xs font-bold uppercase tracking-wider text-gray-600 flex items-center gap-2">
+                            <i class="fa-solid fa-cubes text-blue-600"></i> Aplicacions de Mehillana
+                        </span>
+                        <span class="text-[10px] bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full font-medium">5 Apps</span>
+                    </div>
+                    
+                    <div class="grid grid-cols-3 gap-3 py-2" id="launcherGridItems">
+                        <!-- Populated dynamically -->
+                    </div>
+
+                    <div class="mt-3 pt-3 border-t border-gray-100 text-center">
+                        <p class="text-[11px] text-gray-400">Ecosistema integrat</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-7xl mx-auto px-6 md:px-10 py-10 w-full z-10 flex flex-col gap-10">
+        
+        <!-- Hero Intro -->
+        <section class="text-center max-w-2xl mx-auto space-y-3">
+            <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-blue-50 border border-blue-100 text-blue-600 text-xs font-medium tracking-wide mb-1">
+                <span class="w-2 h-2 rounded-full bg-blue-600"></span>
+                Eines d'Accés Ràpid
+            </div>
+            <h2 class="text-3xl md:text-5xl font-bold tracking-tight text-gray-900">
+                Paquet d'Aplicacions
+            </h2>
+            <p class="text-gray-600 text-sm md:text-base">
+                Selecciona qualsevol de les eines del paquet per accedir directament a l'aplicació corresponent.
+            </p>
+        </section>
+
+        <!-- Quick Focus Buttons -->
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3" id="petalLegend">
+            <!-- Dynamically populated -->
+        </div>
+
+        <!-- App Directory Grid -->
+        <section class="space-y-6">
+            <div class="flex items-center justify-between border-b border-gray-200 pb-4">
+                <h3 class="text-lg font-bold text-gray-900 flex items-center gap-2">
+                    <i class="fa-solid fa-layer-group text-blue-600"></i> Llista d'Apps
+                </h3>
+                <span id="appCount" class="text-xs px-2.5 py-1 rounded-full bg-gray-100 text-gray-600 font-medium">5 apps</span>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="appGrid">
+                <!-- App cards inserted via JS -->
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="w-full py-6 px-6 md:px-10 border-t border-gray-200 bg-white z-10 mt-12">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-gray-500">
+            <p>© 2026 Paquet d'Aplicacions de Mehillana. Tots els drets reservats.</p>
+            <div class="flex flex-wrap items-center gap-4 sm:gap-6">
+                <a href="https://mehillana.github.io/espaimemoria" target="_blank" class="hover:text-gray-900 transition-colors">Espai Memòria</a>
+                <a href="https://mehillana.github.io/nyambook" target="_blank" class="hover:text-gray-900 transition-colors">Nyambook</a>
+                <a href="https://mehillana.github.io/anemalmercat" target="_blank" class="hover:text-gray-900 transition-colors">Anem al Mercat</a>
+                <a href="https://mehillana.github.io/balance" target="_blank" class="hover:text-gray-900 transition-colors">Balance</a>
+                <a href="https://mehillana.github.io/tempslimit" target="_blank" class="hover:text-gray-900 transition-colors">Temps Límit</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Define apps data with updated description for Nyambook
+        const appsData = [
+            {
+                id: 'espaimemoria',
+                title: 'Espai Memòria',
+                category: 'Record & Història',
+                description: 'Un espai dedicat a preservar records, històries i moments especials amb una interfície càlida i emotiva.',
+                url: 'https://mehillana.github.io/espaimemoria',
+                color: '#ec4899', 
+                colorTailwind: 'from-pink-500 to-rose-600',
+                icon: 'fa-brain',
+                badge: 'Emotiu'
+            },
+            {
+                id: 'nyambook',
+                title: 'Nyambook',
+                category: 'Receptes & Cuina',
+                description: 'Crea les teves pròpies receptes, desa-les de manera organitzada i consulta-les pas a pas mentre cuines.',
+                url: 'https://mehillana.github.io/nyambook',
+                color: '#8b5cf6', 
+                colorTailwind: 'from-purple-500 to-indigo-600',
+                icon: 'fa-book-open',
+                badge: 'Gastronomia'
+            },
+            {
+                id: 'anemalmercat',
+                title: 'Anem al Mercat',
+                category: 'Compres & Producte Local',
+                description: 'Organitzador intel·ligent per a la llista de la compra, productes frescos i comerç de proximitat.',
+                url: 'https://mehillana.github.io/anemalmercat',
+                color: '#10b981', 
+                colorTailwind: 'from-emerald-400 to-teal-600',
+                icon: 'fa-basket-shopping',
+                badge: 'Pràctic'
+            },
+            {
+                id: 'balance',
+                title: 'Balance',
+                category: 'Finances & Benestar',
+                description: 'Control de despeses, estalvi i equilibri financer personal amb gràfics clars i intuïtius.',
+                url: 'https://mehillana.github.io/balance',
+                color: '#3b82f6', 
+                colorTailwind: 'from-blue-500 to-cyan-600',
+                icon: 'fa-scale-balanced',
+                badge: 'Productivitat'
+            },
+            {
+                id: 'tempslimit',
+                title: 'Temps Límit',
+                category: 'Gestió del Temps',
+                description: 'Comptadors regressius i temporitzadors avançats per optimitzar la teva productivitat diària.',
+                url: 'https://mehillana.github.io/tempslimit',
+                color: '#f59e0b', 
+                colorTailwind: 'from-amber-400 to-orange-600',
+                icon: 'fa-hourglass-half',
+                badge: 'Temps Real'
+            }
+        ];
+
+        // Toggle Google-style app launcher dropdown
+        function toggleAppLauncher() {
+            const dropdown = document.getElementById('appLauncherDropdown');
+            dropdown.classList.toggle('hidden-dropdown');
+        }
+
+        // Close dropdown when clicking outside
+        window.addEventListener('click', (e) => {
+            const launcherBtn = document.getElementById('launcherBtn');
+            const dropdown = document.getElementById('appLauncherDropdown');
+            if (!launcherBtn.contains(e.target) && !dropdown.contains(e.target)) {
+                dropdown.classList.add('hidden-dropdown');
+            }
+        });
+
+        // Render Application Cards & Workspace Launcher
+        function renderApps(filter = '') {
+            const grid = document.getElementById('appGrid');
+            const legend = document.getElementById('petalLegend');
+            const launcherGrid = document.getElementById('launcherGridItems');
+            
+            const filtered = appsData.filter(app => 
+                app.title.toLowerCase().includes(filter.toLowerCase()) || 
+                app.description.toLowerCase().includes(filter.toLowerCase()) ||
+                app.category.toLowerCase().includes(filter.toLowerCase())
+            );
+
+            document.getElementById('appCount').innerText = `${filtered.length} ${filtered.length === 1 ? 'app' : 'apps'}`;
+
+            // Render Google Workspace style launcher grid items
+            launcherGrid.innerHTML = appsData.map(app => `
+                <a href="${app.url}" target="_blank" 
+                   class="flex flex-col items-center justify-center p-3 rounded-2xl hover:bg-gray-100 transition-all group text-center">
+                    <div class="w-12 h-12 rounded-2xl bg-gradient-to-br ${app.colorTailwind} flex items-center justify-center text-white text-lg shadow-sm group-hover:scale-105 transition-transform">
+                        <i class="fa-solid ${app.icon}"></i>
+                    </div>
+                    <span class="text-xs font-medium text-gray-700 mt-2 truncate w-full group-hover:text-blue-600">${app.title}</span>
+                </a>
+            `).join('');
+
+            // Render Main Directory Grid
+            grid.innerHTML = filtered.map(app => `
+                <div class="bg-white rounded-3xl p-6 flex flex-col justify-between relative overflow-hidden border border-gray-200/80 shadow-sm hover:shadow-md transition-all duration-300 group">
+                    <div class="absolute right-0 top-0 w-32 h-32 rounded-bl-full opacity-5 pointer-events-none transition-all group-hover:opacity-10" style="background-color: ${app.color};"></div>
+                    
+                    <div class="relative z-10 space-y-4">
+                        <div class="flex items-center justify-between">
+                            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br ${app.colorTailwind} flex items-center justify-center text-white text-xl shadow-sm">
+                                <i class="fa-solid ${app.icon}"></i>
+                            </div>
+                            <span class="text-xs font-semibold px-3 py-1 rounded-full bg-gray-100 text-gray-700">
+                                ${app.badge}
+                            </span>
+                        </div>
+
+                        <div>
+                            <span class="text-xs font-medium text-gray-500 uppercase tracking-wider">${app.category}</span>
+                            <h4 class="text-xl font-bold text-gray-900 mt-1">
+                                ${app.title}
+                            </h4>
+                            <p class="text-gray-600 text-sm mt-2 line-clamp-2">
+                                ${app.description}
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="pt-6 relative z-10 flex items-center justify-between mt-4 border-t border-gray-100">
+                        <span class="text-xs font-mono text-gray-400">${app.url.replace('https://', '')}</span>
+                        <a href="${app.url}" target="_blank" 
+                           class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gray-100 hover:bg-blue-600 text-gray-800 hover:text-white font-medium text-xs transition-all duration-200">
+                            <span>Obrir App</span>
+                            <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+                        </a>
+                    </div>
+                </div>
+            `).join('');
+
+            // Render Legend / Quick focus buttons
+            legend.innerHTML = appsData.map((app, index) => `
+                <button onclick="focusObject(${index})" class="bg-white border border-gray-200/80 p-3 rounded-2xl flex items-center gap-3 text-left hover:border-gray-300 hover:shadow-sm transition-all group">
+                    <div class="w-3.5 h-3.5 rounded-full flex-shrink-0 shadow-sm" style="background-color: ${app.color};"></div>
+                    <div class="truncate">
+                        <p class="text-xs font-bold text-gray-800 truncate group-hover:text-blue-600 transition-colors">${app.title}</p>
+                        <p class="text-[10px] text-gray-400 truncate">Element #${index + 1}</p>
+                    </div>
+                </button>
+            `).join('');
+        }
+
+        // Search listener
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            renderApps(e.target.value);
+        });
+
+        // Initialize Three.js 3D Background Scene (Geometric shapes)
+        let scene, camera, renderer, group, meshes = [];
+        let targetedIndex = null;
+        let rotationSpeed = 0.003;
+
+        function initThree() {
+            const container = document.getElementById('canvas-container');
+            
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.set(0, 0, 15);
+
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            container.appendChild(renderer.domElement);
+
+            const ambientLight = new THREE.AmbientLight(0xffffff, 1.5);
+            scene.add(ambientLight);
+
+            const pointLight = new THREE.PointLight(0x3b82f6, 2, 50);
+            pointLight.position.set(5, 5, 5);
+            scene.add(pointLight);
+
+            group = new THREE.Group();
+            scene.add(group);
+
+            const count = appsData.length;
+            const radius = 4.5;
+
+            appsData.forEach((app, i) => {
+                const angle = (i / count) * Math.PI * 2;
+                
+                const geo = new THREE.IcosahedronGeometry(1, 0);
+                const hexColor = parseInt(app.color.replace('#', '0x'));
+                const mat = new THREE.MeshStandardMaterial({
+                    color: hexColor,
+                    roughness: 0.3,
+                    metalness: 0.2,
+                    wireframe: false
+                });
+
+                const mesh = new THREE.Mesh(geo, mat);
+                
+                mesh.position.x = Math.cos(angle) * radius;
+                mesh.position.y = Math.sin(angle) * radius;
+                mesh.position.z = (Math.random() - 0.5) * 2;
+
+                mesh.userData = {
+                    baseAngle: angle,
+                    baseX: mesh.position.x,
+                    baseY: mesh.position.y,
+                    index: i
+                };
+
+                group.add(mesh);
+                meshes.push(mesh);
+            });
+
+            window.addEventListener('resize', onWindowResize);
+            window.addEventListener('mousemove', onMouseMove);
+
+            animate();
+        }
+
+        let mouseX = 0;
+        let mouseY = 0;
+
+        function onMouseMove(event) {
+            mouseX = (event.clientX - window.innerWidth / 2) / (window.innerWidth / 2);
+            mouseY = (event.clientY - window.innerHeight / 2) / (window.innerHeight / 2);
+        }
+
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        function focusObject(index) {
+            targetedIndex = index;
+            rotationSpeed = 0.001;
+            setTimeout(() => {
+                rotationSpeed = 0.003;
+                targetedIndex = null;
+            }, 3000);
+        }
+
+        let clock = new THREE.Clock();
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            const elapsedTime = clock.getElapsedTime();
+
+            group.rotation.z += rotationSpeed;
+            group.rotation.x += (mouseY * 0.2 - group.rotation.x) * 0.05;
+            group.rotation.y += (mouseX * 0.2 - group.rotation.y) * 0.05;
+            
+            meshes.forEach((mesh, idx) => {
+                mesh.rotation.x += 0.01;
+                mesh.rotation.y += 0.015;
+
+                const pulse = Math.sin(elapsedTime * 2 + idx) * 0.2;
+                mesh.scale.set(1 + pulse, 1 + pulse, 1 + pulse);
+            });
+
+            renderer.render(scene, camera);
+        }
+
+        window.onload = function() {
+            renderApps();
+            initThree();
+        };
+    </script>
+</body>
+</html>

@@ -110,7 +110,7 @@
                         <span class="text-xs font-bold uppercase tracking-wider text-gray-600 flex items-center gap-2">
                             <i class="fa-solid fa-cubes text-blue-600"></i> Aplicacions de Mehillana
                         </span>
-                        <span id="launcherAppCountBadge" class="text-[10px] bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full font-medium">8 Apps</span>
+                        <span id="launcherAppCountBadge" class="text-[10px] bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full font-medium">9 Apps</span>
                     </div>
                     
                     <div class="grid grid-cols-3 gap-3 py-2 max-h-64 overflow-y-auto" id="launcherGridItems">
@@ -142,7 +142,7 @@
         </section>
 
         <!-- Quick Focus Buttons -->
-        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-8 gap-3" id="petalLegend">
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-9 gap-3" id="petalLegend">
             <!-- Dynamically populated -->
         </div>
 
@@ -152,7 +152,7 @@
                 <h3 class="text-lg font-bold text-gray-900 flex items-center gap-2">
                     <i class="fa-solid fa-layer-group text-blue-600"></i> Llista d'Apps
                 </h3>
-                <span id="appCount" class="text-xs px-2.5 py-1 rounded-full bg-gray-100 text-gray-600 font-medium">8 apps</span>
+                <span id="appCount" class="text-xs px-2.5 py-1 rounded-full bg-gray-100 text-gray-600 font-medium">9 apps</span>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="appGrid">
@@ -174,12 +174,13 @@
                 <a href="https://mehillana.github.io/tempslimit" target="_blank" class="hover:text-gray-900 transition-colors">Temps Límit</a>
                 <a href="https://mehillana.github.io/clima" target="_blank" class="hover:text-gray-900 transition-colors">Clima</a>
                 <a href="https://mehillana.github.io/ruta" target="_blank" class="hover:text-gray-900 transition-colors">Ruta</a>
+                <a href="https://mehillana.github.io/accesdirecte" target="_blank" class="hover:text-gray-900 transition-colors">Accés directe</a>
             </div>
         </div>
     </footer>
 
     <script>
-        // Define apps data including Clima and Ruta
+        // Define apps data including Accés directe
         const appsData = [
             {
                 id: 'magia',
@@ -268,6 +269,17 @@
                 colorTailwind: 'from-lime-500 to-emerald-600',
                 icon: 'fa-map-location-dot',
                 badge: 'Mobilitat'
+            },
+            {
+                id: 'accesdirecte',
+                title: 'Accés directe',
+                category: 'Utilitats & Navegació',
+                description: 'Accés ràpid i directe a les teves adreces i dreceres preferides amb una cerca centralitzada.',
+                url: 'https://mehillana.github.io/accesdirecte',
+                color: '#111827', 
+                colorTailwind: 'from-gray-900 to-black',
+                icon: 'fa-magnifying-glass',
+                badge: 'Drecera'
             }
         ];
 

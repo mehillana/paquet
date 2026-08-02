@@ -38,6 +38,9 @@ El paquet s'estructura com un directori unificat des d'on es pot accedir a tot l
 | **Nyambook** | Llibreta digital personalitzada de receptes culinàries i tradicions gastronòmiques. | 🟢 Actiu |
 | **Anem al Mercat** | Utilitat pràctica per a la gestió de compres setmanals i comerç de proximitat. | 🟢 Actiu |
 | **Clima & Ruta** | Eines de meteorologia local, cartografia i planificació de desplaçaments i rutes. | 🟢 Actiu |
+| **Balance** | Una app per gestionar despeses. | 🟢 Actiu |
+| **Màgia** | Eines de relaxació, música i color. | 🟢 Actiu |
+| **Accés Directe** | Crecador responsable sense dependre d'altres. | 🟢 Actiu |
 
 ---
 

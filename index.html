@@ -110,10 +110,10 @@
                         <span class="text-xs font-bold uppercase tracking-wider text-gray-600 flex items-center gap-2">
                             <i class="fa-solid fa-cubes text-blue-600"></i> Aplicacions de Mehillana
                         </span>
-                        <span class="text-[10px] bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full font-medium">6 Apps</span>
+                        <span id="launcherAppCountBadge" class="text-[10px] bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full font-medium">7 Apps</span>
                     </div>
                     
-                    <div class="grid grid-cols-3 gap-3 py-2" id="launcherGridItems">
+                    <div class="grid grid-cols-3 gap-3 py-2 max-h-64 overflow-y-auto" id="launcherGridItems">
                         <!-- Populated dynamically -->
                     </div>
 
@@ -142,7 +142,7 @@
         </section>
 
         <!-- Quick Focus Buttons -->
-        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3" id="petalLegend">
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-3" id="petalLegend">
             <!-- Dynamically populated -->
         </div>
 
@@ -152,7 +152,7 @@
                 <h3 class="text-lg font-bold text-gray-900 flex items-center gap-2">
                     <i class="fa-solid fa-layer-group text-blue-600"></i> Llista d'Apps
                 </h3>
-                <span id="appCount" class="text-xs px-2.5 py-1 rounded-full bg-gray-100 text-gray-600 font-medium">6 apps</span>
+                <span id="appCount" class="text-xs px-2.5 py-1 rounded-full bg-gray-100 text-gray-600 font-medium">7 apps</span>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="appGrid">
@@ -172,12 +172,13 @@
                 <a href="https://mehillana.github.io/anemalmercat" target="_blank" class="hover:text-gray-900 transition-colors">Anem al Mercat</a>
                 <a href="https://mehillana.github.io/balance" target="_blank" class="hover:text-gray-900 transition-colors">Balance</a>
                 <a href="https://mehillana.github.io/tempslimit" target="_blank" class="hover:text-gray-900 transition-colors">Temps Límit</a>
+                <a href="https://mehillana.github.io/clima" target="_blank" class="hover:text-gray-900 transition-colors">Clima</a>
             </div>
         </div>
     </footer>
 
     <script>
-        // Define apps data including Màgia
+        // Define apps data including Clima
         const appsData = [
             {
                 id: 'magia',
@@ -244,6 +245,17 @@
                 colorTailwind: 'from-amber-400 to-orange-600',
                 icon: 'fa-hourglass-half',
                 badge: 'Temps Real'
+            },
+            {
+                id: 'clima',
+                title: 'Clima',
+                category: 'Meteorologia & Temps',
+                description: 'Consulta l\'estat del temps actual, previsions meteorològiques i condicions atmosfèriques a l\'instant.',
+                url: 'https://mehillana.github.io/clima',
+                color: '#06b6d4', 
+                colorTailwind: 'from-cyan-400 to-blue-600',
+                icon: 'fa-cloud-sun',
+                badge: 'Atmosfera'
             }
         ];
 
@@ -275,6 +287,7 @@
             );
 
             document.getElementById('appCount').innerText = `${filtered.length} ${filtered.length === 1 ? 'app' : 'apps'}`;
+            document.getElementById('launcherAppCountBadge').innerText = `${appsData.length} Apps`;
 
             // Render Google Workspace style launcher grid items
             launcherGrid.innerHTML = appsData.map(app => `
@@ -316,7 +329,7 @@
                     <div class="pt-6 relative z-10 flex items-center justify-between mt-4 border-t border-gray-100">
                         <span class="text-xs font-mono text-gray-400">${app.url.replace('https://', '')}</span>
                         <a href="${app.url}" target="_blank" 
-                           class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gray-100 hover:bg-blue-600 text-gray-800 hover:text-white font-medium text-xs transition-all duration-200">
+                            class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gray-100 hover:bg-blue-600 text-gray-800 hover:text-white font-medium text-xs transition-all duration-200">
                             <span>Obrir App</span>
                             <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
                         </a>

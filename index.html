@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Paquet d'Aplicacions de Mehillana</title>
+    <title>Paquet d'Aplicacions de Mehillana | Ecosistema Digital per a les Persones</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -40,6 +40,22 @@
             pointer-events: none;
         }
 
+        .page-section {
+            display: none;
+            animation: fadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .page-section.active {
+            display: flex;
+            flex-direction: column;
+            gap: 2.5rem;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
         /* Google-style app grid popup transition */
         .app-grid-dropdown {
             transform-origin: top right;
@@ -71,11 +87,11 @@
 
     <div id="canvas-container"></div>
 
-    <header class="w-full py-4 px-6 md:px-10 z-40 flex items-center justify-between max-w-7xl mx-auto border-b border-gray-200 bg-white/80 backdrop-blur-md sticky top-0">
-        <div class="flex items-center gap-3 cursor-pointer" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
-            <!-- Nou logo amb remolí de colors corporatius de Mehillana -->
-            <div class="w-10 h-10 rounded-full flex items-center justify-center text-white shadow-md font-bold text-lg overflow-hidden relative" style="background: conic-gradient(#ec4899, #8b5cf6, #3b82f6, #10b981, #f59e0b, #ec4899);">
-                <div class="absolute inset-1 rounded-full bg-white/90 flex items-center justify-center text-xs font-bold text-gray-900">
+    <!-- Header & Navigation Bar -->
+    <header class="w-full py-4 px-6 md:px-10 z-40 flex items-center justify-between max-w-7xl mx-auto border-b border-gray-200/80 bg-white/90 backdrop-blur-md sticky top-0 shadow-xs">
+        <div class="flex items-center gap-3 cursor-pointer group" onclick="switchPage('inici')">
+            <div class="w-10 h-10 rounded-full flex items-center justify-center text-white shadow-md font-bold text-lg overflow-hidden relative group-hover:scale-105 transition-transform" style="background: conic-gradient(#f59e0b, #ec4899, #8b5cf6, #3b82f6, #10b981, #f59e0b);">
+                <div class="absolute inset-1 rounded-full bg-white/95 flex items-center justify-center text-xs font-bold text-gray-900">
                     M
                 </div>
             </div>
@@ -83,132 +99,296 @@
                 <h1 class="text-base md:text-lg font-medium text-gray-800 tracking-tight">
                     Paquet de Mehillana
                 </h1>
-                <p class="text-[11px] text-gray-500">Ecosistema d'aplicacions</p>
+                <p class="text-[11px] text-gray-500 font-medium">Ecosistema digital per a les persones</p>
             </div>
         </div>
 
-        <!-- Right action menu: Search + Google-style Grid Launcher icon -->
-        <div class="flex items-center gap-4">
-            <div class="relative hidden sm:block w-64 md:w-80">
+        <!-- Navigation Menu Tabs -->
+        <nav class="hidden lg:flex items-center gap-1 bg-gray-100/85 p-1 rounded-full border border-gray-200/60 text-xs font-medium shadow-inner">
+            <button onclick="switchPage('inici')" id="nav-inici" class="px-4 py-2 rounded-full transition-all text-gray-700 bg-white shadow-sm font-semibold">Inici</button>
+            <button onclick="switchPage('sobre')" id="nav-sobre" class="px-4 py-2 rounded-full transition-all text-gray-600 hover:text-gray-900">Sobre Mehillana</button>
+            <button onclick="switchPage('funciona')" id="nav-funciona" class="px-4 py-2 rounded-full transition-all text-gray-600 hover:text-gray-900">Com Funciona</button>
+            <button onclick="switchPage('apps')" id="nav-apps" class="px-4 py-2 rounded-full transition-all text-gray-600 hover:text-gray-900">Directori d'Apps</button>
+        </nav>
+
+        <!-- Right actions: Search + Workspace Launcher -->
+        <div class="flex items-center gap-3">
+            <div class="relative hidden sm:block w-48 md:w-64">
                 <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-gray-400">
                     <i class="fa-solid fa-magnifying-glass text-xs"></i>
                 </span>
                 <input type="text" id="searchInput" placeholder="Cerca al paquet..." 
-                    class="w-full pl-9 pr-4 py-2 rounded-full bg-gray-100 border border-transparent text-xs text-gray-800 placeholder-gray-500 focus:outline-none focus:bg-white focus:border-blue-500 focus:shadow-sm transition-all">
+                    class="w-full pl-9 pr-4 py-2 rounded-full bg-gray-100 border border-transparent text-xs text-gray-800 placeholder-gray-500 focus:outline-none focus:bg-white focus:border-blue-500 focus:shadow-sm transition-all"
+                    oninput="handleSearchInput(this.value)">
             </div>
 
-            <!-- Google-style 3x3 App Launcher Icon Button -->
+            <!-- App Launcher Button -->
             <div class="relative">
-                <button onclick="toggleAppLauncher()" id="launcherBtn" title="Aplicacions de Mehillana" 
-                    class="w-10 h-10 rounded-full hover:bg-gray-100 flex items-center justify-center text-gray-600 transition-all focus:outline-none">
+                <button onclick="toggleAppLauncher()" id="launcherBtn" title="Menú d'Aplicacions" 
+                    class="w-10 h-10 rounded-full hover:bg-gray-100 flex items-center justify-center text-gray-600 transition-all focus:outline-none border border-transparent hover:border-gray-200">
                     <i class="fa-solid fa-grip text-base"></i>
                 </button>
 
-                <!-- Workspace Popup Dropdown Menu -->
+                <!-- Dropdown -->
                 <div id="appLauncherDropdown" class="app-grid-dropdown hidden-dropdown absolute right-0 mt-2 w-80 sm:w-96 bg-white rounded-3xl p-5 shadow-2xl z-50 border border-gray-200">
                     <div class="flex items-center justify-between pb-3 mb-3 border-b border-gray-100">
                         <span class="text-xs font-bold uppercase tracking-wider text-gray-600 flex items-center gap-2">
                             <i class="fa-solid fa-cubes text-blue-600"></i> Aplicacions de Mehillana
                         </span>
-                        <span id="launcherAppCountBadge" class="text-[10px] bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full font-medium">9 Apps</span>
+                        <span class="text-[10px] bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full font-bold">6 Apps</span>
                     </div>
                     
-                    <div class="grid grid-cols-3 gap-3 py-2 max-h-64 overflow-y-auto" id="launcherGridItems">
-                        <!-- Populated dynamically -->
-                    </div>
+                    <div class="grid grid-cols-3 gap-3 py-2 max-h-64 overflow-y-auto" id="launcherGridItems"></div>
 
-                    <div class="mt-3 pt-3 border-t border-gray-100 text-center">
-                        <p class="text-[11px] text-gray-400">Ecosistema integrat</p>
+                    <div class="mt-3 pt-3 border-t border-gray-100 text-center flex items-center justify-between">
+                        <span class="text-[10px] text-gray-400">Fundat: Juliol de 2026</span>
+                        <button onclick="switchPage('apps'); toggleAppLauncher();" class="text-[11px] font-semibold text-blue-600 hover:underline">Veure tot →</button>
                     </div>
                 </div>
             </div>
         </div>
     </header>
 
-    <main class="flex-grow max-w-7xl mx-auto px-6 md:px-10 py-10 w-full z-10 flex flex-col gap-10">
+    <!-- Main Content Area containing multiple virtual pages -->
+    <main class="flex-grow max-w-7xl mx-auto px-6 md:px-10 py-10 w-full z-10">
         
-        <!-- Hero Intro -->
-        <section class="text-center max-w-2xl mx-auto space-y-3">
-            <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-blue-50 border border-blue-100 text-blue-600 text-xs font-medium tracking-wide mb-1">
-                <span class="w-2 h-2 rounded-full bg-blue-600"></span>
-                Eines d'Accés Ràpid
+        <!-- ================= PÀGINA 1: INICI ================= -->
+        <section id="page-inici" class="page-section active">
+            <!-- Hero Banner -->
+            <div class="text-center max-w-3xl mx-auto space-y-4 py-8">
+                <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-50 border border-amber-200 text-amber-800 text-xs font-semibold tracking-wide shadow-xs">
+                    <i class="fa-solid fa-heart text-amber-600"></i> Creat al Juliol de 2026 • Pensat exclusivament per a les Persones
+                </div>
+                <h2 class="text-4xl md:text-6xl font-extrabold tracking-tight text-gray-900 leading-tight">
+                    El Paquet d'Aplicacions de Mehillana
+                </h2>
+                <p class="text-gray-600 text-base md:text-lg leading-relaxed max-w-2xl mx-auto">
+                    Un ecosistema digital independent, humà i transparent. Un conjunt de recursos dissenyats per millorar el benestar emocional, acompanyar en moments vitals, organitzar la vida quotidiana i simplificar la relació amb la tecnologia.
+                </p>
+                <div class="flex flex-wrap items-center justify-center gap-3 pt-4">
+                    <button onclick="switchPage('sobre')" class="px-6 py-3 rounded-2xl bg-gray-900 hover:bg-gray-800 text-white font-medium text-sm transition-all shadow-md">
+                        Conèixer el Manifest
+                    </button>
+                    <button onclick="switchPage('apps')" class="px-6 py-3 rounded-2xl bg-white hover:bg-gray-50 text-gray-800 border border-gray-300 font-medium text-sm transition-all shadow-sm">
+                        Explorar les 6 Eines
+                    </button>
+                </div>
             </div>
-            <h2 class="text-3xl md:text-5xl font-bold tracking-tight text-gray-900">
-                Paquet d'Aplicacions
-            </h2>
-            <p class="text-gray-600 text-sm md:text-base">
-                Selecciona qualsevol de les eines del paquet per accedir directament a l'aplicació corresponent.
-            </p>
+
+            <!-- Feature Highlights Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4">
+                <div class="bg-white/90 backdrop-blur-md rounded-3xl p-6 border border-gray-200 shadow-sm space-y-3 hover:shadow-md transition-all">
+                    <div class="w-12 h-12 rounded-2xl bg-amber-100 text-amber-600 flex items-center justify-center text-xl">
+                        <i class="fa-solid fa-seedling"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900">Enfocat a les Persones</h3>
+                    <p class="text-xs text-gray-600 leading-relaxed">
+                        Cada eina sorgeix d'una necessitat real del dia a dia: la salut mental, la gestió del dol, l'alimentació de proximitat i l'organització personal lliure de massificacions.
+                    </p>
+                </div>
+
+                <div class="bg-white/90 backdrop-blur-md rounded-3xl p-6 border border-gray-200 shadow-sm space-y-3 hover:shadow-md transition-all">
+                    <div class="w-12 h-12 rounded-2xl bg-purple-100 text-purple-600 flex items-center justify-center text-xl">
+                        <i class="fa-solid fa-feather"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900">Refugis Digitals</h3>
+                    <p class="text-xs text-gray-600 leading-relaxed">
+                        Espais íntims i segurs com <em>Espai Memòria</em> o <em>Ànsia</em> ofereixen un entorn serè, respectuós i lliure de publicitat intrusiva per cuidar la salut emocional.
+                    </p>
+                </div>
+
+                <div class="bg-white/90 backdrop-blur-md rounded-3xl p-6 border border-gray-200 shadow-sm space-y-3 hover:shadow-md transition-all">
+                    <div class="w-12 h-12 rounded-2xl bg-blue-100 text-blue-600 flex items-center justify-center text-xl">
+                        <i class="fa-solid fa-cubes"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900">Ecosistema Modular</h3>
+                    <p class="text-xs text-gray-600 leading-relaxed">
+                        Aplicacions web lleugeres, independents i connectades entre elles mitjançant un menú de navegació i un llançador ràpid tipus graella accessible des de qualsevol lloc.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Quick App Grid Preview -->
+            <div class="space-y-6 pt-6">
+                <div class="flex items-center justify-between border-b border-gray-200 pb-4">
+                    <h3 class="text-xl font-bold text-gray-900 flex items-center gap-2">
+                        <i class="fa-solid fa-layer-group text-blue-600"></i> Les Eines del Paquet
+                    </h3>
+                    <button onclick="switchPage('apps')" class="text-xs font-semibold text-blue-600 hover:underline">Veure directori complet →</button>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="homeAppGrid"></div>
+            </div>
         </section>
 
-        <!-- Quick Focus Buttons -->
-        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-9 gap-3" id="petalLegend">
-            <!-- Dynamically populated -->
-        </div>
+        <!-- ================= PÀGINA 2: SOBRE MEHILLANA ================= -->
+        <section id="page-sobre" class="page-section">
+            <div class="max-w-4xl mx-auto space-y-8 bg-white/90 backdrop-blur-md rounded-3xl p-8 md:p-12 border border-gray-200 shadow-sm">
+                <div class="space-y-3 border-b border-gray-200 pb-6">
+                    <span class="text-xs font-bold uppercase tracking-widest text-amber-700 bg-amber-50 px-3 py-1 rounded-full border border-amber-200">Manifest Oficial</span>
+                    <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900">Què és Mehillana i per què va néixer?</h2>
+                    <p class="text-sm text-gray-500">Fundat al **juliol de 2026** per humanitzar l'experiència digital quotidiana.</p>
+                </div>
 
-        <!-- App Directory Grid -->
-        <section class="space-y-6">
-            <div class="flex items-center justify-between border-b border-gray-200 pb-4">
-                <h3 class="text-lg font-bold text-gray-900 flex items-center gap-2">
-                    <i class="fa-solid fa-layer-group text-blue-600"></i> Llista d'Apps
-                </h3>
-                <span id="appCount" class="text-xs px-2.5 py-1 rounded-full bg-gray-100 text-gray-600 font-medium">9 apps</span>
-            </div>
+                <div class="space-y-6 text-gray-700 text-sm md:text-base leading-relaxed">
+                    <p>
+                        El <strong>Paquet d'Aplicacions de Mehillana</strong> va ser creat al <strong>juliol de 2026</strong> amb una convicció ferma: la tecnologia ha de ser un suport amable i transparent per a les persones, no una font de distracció ni de saturació informativa.
+                    </p>
+                    <p>
+                        En un món dominat per interfícies agressives, algoritmes publicitaris i complexitats innecessàries, Mehillana construeix un univers digital alternatiu format per eines minimalistes, segures i profundament útils per a la vida diària.
+                    </p>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="appGrid">
-                <!-- App cards inserted via JS -->
+                    <h3 class="text-xl font-bold text-gray-900 pt-3">Els Pilars del Projecte</h3>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
+                        <div class="bg-gray-50 p-6 rounded-2xl border border-gray-200 space-y-2">
+                            <h4 class="font-bold text-gray-900 text-sm flex items-center gap-2"><i class="fa-solid fa-user-shield text-blue-600"></i> Disseny Centrat en la Persona</h4>
+                            <p class="text-xs text-gray-600 leading-relaxed">Cap eina utilitza patrons manipulatius. Les dades i reflexions de l'usuari pertanyen només a ell, garantint un refugi digital segur.</p>
+                        </div>
+                        <div class="bg-gray-50 p-6 rounded-2xl border border-gray-200 space-y-2">
+                            <h4 class="font-bold text-gray-900 text-sm flex items-center gap-2"><i class="fa-solid fa-feather text-pink-600"></i> Calma i Serenitat Visual</h4>
+                            <p class="text-xs text-gray-600 leading-relaxed">L'ús de gammes cromàtiques suaus, tipografies netes i espais blancs generosos afavoreixen la concentració i redueixen l'estrès digital.</p>
+                        </div>
+                        <div class="bg-gray-50 p-6 rounded-2xl border border-gray-200 space-y-2">
+                            <h4 class="font-bold text-gray-900 text-sm flex items-center gap-2"><i class="fa-solid fa-hands-holding-child text-amber-600"></i> Utilitat Humana Real</h4>
+                            <p class="text-xs text-gray-600 leading-relaxed">Des de la gestió del dol o l'ansietat fins a la compra de barri i l'organització culinària, cada mòdul resol problemes reals de les persones.</p>
+                        </div>
+                        <div class="bg-gray-50 p-6 rounded-2xl border border-gray-200 space-y-2">
+                            <h4 class="font-bold text-gray-900 text-sm flex items-center gap-2"><i class="fa-solid fa-bolt text-emerald-600"></i> Independència Tecnològica</h4>
+                            <p class="text-xs text-gray-600 leading-relaxed">Aplicacions lleugeres basades en estàndards web oberts que funcionen de manera autònoma o connectades pel llançador.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pt-6 border-t border-gray-200 flex flex-col sm:flex-row justify-between items-center gap-4">
+                    <span class="text-xs text-gray-400">Paquet de Mehillana • Creat al Juliol de 2026</span>
+                    <button onclick="switchPage('funciona')" class="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-medium text-xs transition-all shadow-sm">Com funciona tècnicament? →</button>
+                </div>
             </div>
         </section>
+
+        <!-- ================= PÀGINA 3: COM FUNCIONA ================= -->
+        <section id="page-funciona" class="page-section">
+            <div class="max-w-4xl mx-auto space-y-8 bg-white/90 backdrop-blur-md rounded-3xl p-8 md:p-12 border border-gray-200 shadow-sm">
+                <div class="space-y-3 border-b border-gray-200 pb-6">
+                    <span class="text-xs font-bold uppercase tracking-widest text-blue-600 bg-blue-50 px-3 py-1 rounded-full border border-blue-200">Arquitectura i Navegació</span>
+                    <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900">Com Funciona el Paquet de Mehillana?</h2>
+                    <p class="text-sm text-gray-500">Un sistema modular integrat pensat per a la màxima accessibilitat.</p>
+                </div>
+
+                <div class="space-y-6 text-gray-700 text-sm md:text-base leading-relaxed">
+                    <p>
+                        El Paquet d'Aplicacions de Mehillana funciona com un portal unificat de pàgines interconnectades. Cada recurs disposa del seu propi espai explicatiu i aplicatiu, però tots comparteixen un nucli comú dissenyat per facilitar la interacció diària.
+                    </p>
+                    
+                    <div class="space-y-6 pt-4">
+                        <div class="flex gap-4 items-start bg-gray-50 p-5 rounded-2xl border border-gray-200">
+                            <div class="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center font-bold text-base flex-shrink-0 shadow-sm">1</div>
+                            <div class="space-y-1">
+                                <h4 class="font-bold text-gray-900 text-base">El Llançador Central (Google-Style Grid)</h4>
+                                <p class="text-xs text-gray-600 leading-relaxed">Fent clic a la icona de graella situada a la barra superior dreta, s'obre un menú flotant amb totes les aplicacions del paquet. Permet saltar a l'instant de qualsevol pàgina a una altra eina amb un sol clic.</p>
+                            </div>
+                        </div>
+
+                        <div class="flex gap-4 items-start bg-gray-50 p-5 rounded-2xl border border-gray-200">
+                            <div class="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center font-bold text-base flex-shrink-0 shadow-sm">2</div>
+                            <div class="space-y-1">
+                                <h4 class="font-bold text-gray-900 text-base">Cerca Global Intel·ligent</h4>
+                                <p class="text-xs text-gray-600 leading-relaxed">La barra de cerca integrada al capçal permet introduir paraules clau, categories o noms d'aplicacions per filtrar i trobar immediatament el recurs desitjat en temps real.</p>
+                            </div>
+                        </div>
+
+                        <div class="flex gap-4 items-start bg-gray-50 p-5 rounded-2xl border border-gray-200">
+                            <div class="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center font-bold text-base flex-shrink-0 shadow-sm">3</div>
+                            <div class="space-y-1">
+                                <h4 class="font-bold text-gray-900 text-base">Pàgines Explicatives Dedicades</h4>
+                                <p class="text-xs text-gray-600 leading-relaxed">Cada aplicació compta amb una pàgina pròpia de descripció detallada que explica el seu propòsit humà, funcionament pràctic i objectiu dins del paquet creat al juliol de 2026.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pt-6 border-t border-gray-200 flex justify-between items-center">
+                    <button onclick="switchPage('sobre')" class="text-xs font-semibold text-gray-600 hover:text-gray-900">← Tornar a Sobre Mehillana</button>
+                    <button onclick="switchPage('apps')" class="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-medium text-xs transition-all shadow-sm">Explorar el Directori d'Apps →</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= PÀGINA 4: DIRECTORI D'APPS ================= -->
+        <section id="page-apps" class="page-section">
+            <div class="space-y-6">
+                <div class="flex flex-col md:flex-row items-start md:items-center justify-between border-b border-gray-200 pb-4 gap-4">
+                    <div>
+                        <h2 class="text-2xl md:text-3xl font-extrabold text-gray-900">Directori General d'Aplicacions</h2>
+                        <p class="text-xs text-gray-500 mt-1">Catàleg complet de les 6 eines que formen el Paquet de Mehillana (Juliol 2026)</p>
+                    </div>
+                    <span id="appCountBadge" class="text-xs px-3.5 py-1.5 rounded-full bg-blue-50 text-blue-600 font-bold border border-blue-200 shadow-xs">6 apps disponibles</span>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="directoryAppGrid"></div>
+            </div>
+        </section>
+
+        <!-- ================= PÀGINES INDIVIDUALS EXTENSES PER A CADA RECURS ================= -->
+        <div id="dynamicResourcePages"></div>
 
     </main>
 
-    <footer class="w-full py-6 px-6 md:px-10 border-t border-gray-200 bg-white z-10 mt-12">
-        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-gray-500">
-            <p>© 2026 Paquet d'Aplicacions de Mehillana. Tots els drets reservats.</p>
-            <div class="flex flex-wrap items-center gap-4 sm:gap-6">
-                <a href="https://mehillana.github.io/magia" target="_blank" class="hover:text-gray-900 transition-colors">Màgia</a>
-                <a href="https://mehillana.github.io/espaimemoria" target="_blank" class="hover:text-gray-900 transition-colors">Espai Memòria</a>
-                <a href="https://mehillana.github.io/nyambook" target="_blank" class="hover:text-gray-900 transition-colors">Nyambook</a>
-                <a href="https://mehillana.github.io/anemalmercat" target="_blank" class="hover:text-gray-900 transition-colors">Anem al Mercat</a>
-                <a href="https://mehillana.github.io/balance" target="_blank" class="hover:text-gray-900 transition-colors">Balance</a>
-                <a href="https://mehillana.github.io/tempslimit" target="_blank" class="hover:text-gray-900 transition-colors">Temps Límit</a>
-                <a href="https://mehillana.github.io/clima" target="_blank" class="hover:text-gray-900 transition-colors">Clima</a>
-                <a href="https://mehillana.github.io/ruta" target="_blank" class="hover:text-gray-900 transition-colors">Ruta</a>
-                <a href="https://mehillana.github.io/accesdirecte" target="_blank" class="hover:text-gray-900 transition-colors">Accés directe</a>
+    <!-- Footer -->
+    <footer class="w-full py-8 px-6 md:px-10 border-t border-gray-200 bg-white z-10 mt-16 shadow-inner">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 text-xs text-gray-500">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-xs shadow-sm" style="background: conic-gradient(#f59e0b, #ec4899, #8b5cf6, #3b82f6);">M</div>
+                <p>© 2026 Paquet d'Aplicacions de Mehillana. Creat al juliol de 2026 per a les persones.</p>
+            </div>
+            <div class="flex flex-wrap items-center gap-4 sm:gap-6 font-medium">
+                <button onclick="switchPage('inici')" class="hover:text-gray-900 transition-colors">Inici</button>
+                <button onclick="switchPage('sobre')" class="hover:text-gray-900 transition-colors">Sobre Mehillana</button>
+                <button onclick="switchPage('funciona')" class="hover:text-gray-900 transition-colors">Com Funciona</button>
+                <button onclick="switchPage('apps')" class="hover:text-gray-900 transition-colors">Directori</button>
             </div>
         </div>
     </footer>
 
+    <!-- JavaScript Application Logic -->
     <script>
-        // Define apps data including Accés directe
         const appsData = [
             {
-                id: 'magia',
-                title: 'Màgia',
-                category: 'Música & Ambient',
-                description: 'Música generativa relaxant amb un fons degradat de colors en moviment i frases inspiradores.',
-                url: 'https://mehillana.github.io/magia',
-                color: '#ec4899', 
-                colorTailwind: 'from-pink-500 via-purple-500 to-indigo-600',
-                icon: 'fa-wand-magic-sparkles',
-                badge: 'Immersiu'
+                id: 'ansia',
+                title: 'Ànsia',
+                category: 'Benestar & Salut Mental',
+                shortDesc: 'Plataforma especialitzada per gestionar l\'ansietat amb exercicis de respiració guiada i pautes de calma.',
+                fullDesc: 'Ànsia és una eina dissenyada per oferir suport immediat i pautes d\'autocontrol davant de crisis d\'ansietat, estrès agut o moments de sobrecàrrega mental. Inclou temporitzadors de respiració rítmica (com la tècnica 4-7-8), registres d\'estat d\'ànim diari i consells pràctics validats per calmar el sistema nerviós autònom de manera natural.',
+                objective: 'Proporcionar un recurs ràpid, accessible, íntim i lliure de jutges per ajudar qualsevol persona a recuperar la pau mental i l\'equilibri emocional en moments de tensió.',
+                whoIsItFor: 'Pensat per a persones que busquen eines pràctiques d\'autocontrol emocional i suport immediat en el seu dia a dia.',
+                url: 'https://mehillana.github.io/ansia',
+                color: '#f59e0b', 
+                colorTailwind: 'from-amber-500 via-orange-500 to-red-500',
+                icon: 'fa-lungs',
+                badge: 'Salut Mental'
             },
             {
                 id: 'espaimemoria',
                 title: 'Espai Memòria',
-                category: 'Record & Història',
-                description: 'Un espai dedicat a preservar records, històries i moments especials amb una interfície càlida i emotiva.',
+                category: 'Refugi & Gestió del Dol',
+                shortDesc: 'Un refugi digital íntim i acollidor per a la gestió del dol i la preservació de records.',
+                fullDesc: 'Espai Memòria s\'ha concebut com un entorn segur, respectuós i càlid creat per transitar el procés del dol i recordar estimadament a persones o moments importants. Permet guardar records significatius, redactar reflexions íntimes, cartes de comiat o diaris personals en un espai privat i lliure de qualsevol interferència exterior.',
+                objective: 'Acompanyar emocionalment en moments de pèrdua, oferint un espai personal on el record, l\'estima i el respecte es mantenen vius i cuidats amb total serenitat.',
+                whoIsItFor: 'Adreçat a qualsevol persona que necessiti un lloc íntim on expressar sentiments profunds, gestionar el dol o preservar la memòria de moments vitals.',
                 url: 'https://mehillana.github.io/espaimemoria',
                 color: '#ec4899', 
                 colorTailwind: 'from-pink-500 to-rose-600',
-                icon: 'fa-brain',
-                badge: 'Emotiu'
+                icon: 'fa-feather',
+                badge: 'Refugi Digital'
             },
             {
                 id: 'nyambook',
                 title: 'Nyambook',
                 category: 'Receptes & Cuina',
-                description: 'Crea les teves pròpies receptes, desa-les de manera organitzada i consulta-les pas a pas mentre cuines.',
+                shortDesc: 'Llibre de receptes digital interactiu per organitzar ingredients i passos de cuina.',
+                fullDesc: 'Nyambook centralitza tot l\'univers culinari personal. Permet crear, editar i catalogar receptes casolanes, calcular quantitats d\'ingredients de manera proporcional segons el nombre de comensals, i seguir les instruccions pas a pas sense distraccions mentre s\'elabora el plat.',
+                objective: 'Aportar facilitat, ordre i alegria a la cuina, fomentant l\'elaboració de plats casolans saludables i la conservació del patrimoni culinari de la família.',
+                whoIsItFor: 'Ideal per a amants de la cuina casolana que volen tenir totes les seves receptes ordenades i accessibles en un sol lloc digital.',
                 url: 'https://mehillana.github.io/nyambook',
                 color: '#8b5cf6', 
                 colorTailwind: 'from-purple-500 to-indigo-600',
@@ -219,40 +399,24 @@
                 id: 'anemalmercat',
                 title: 'Anem al Mercat',
                 category: 'Compres & Producte Local',
-                description: 'Organitzador intel·ligent per a la llista de la compra, productes frescos i comerç de proximitat.',
+                shortDesc: 'Assistent intel·ligent per organitzar la llista de la compra per parades i comerç de proximitat.',
+                fullDesc: 'Anem al Mercat optimitza l\'experiència d\'anar a comprar al mercat municipal o a les botigues de barri. Organitza automàticament els productes segons les seccions o parades habituals (fruiteria, carnisseria, peixateria, forn), donant suport actiu al consum de producte fresc i de temporada.',
+                objective: 'Promoure el comerç local i de proximitat, convertint la compra setmanal en un procés ordenat, eficaç, ràpid i respectuós amb el medi ambient.',
+                whoIsItFor: 'Pensat per a persones que prioritzen el producte fresc de mercat i volen organitzar les seves compres de manera pràctica.',
                 url: 'https://mehillana.github.io/anemalmercat',
                 color: '#10b981', 
                 colorTailwind: 'from-emerald-400 to-teal-600',
                 icon: 'fa-basket-shopping',
-                badge: 'Pràctic'
-            },
-            {
-                id: 'balance',
-                title: 'Balance',
-                category: 'Finances & Benestar',
-                description: 'Control de despeses, estalvi i equilibri financer personal amb gràfics clars i intuïtius.',
-                url: 'https://mehillana.github.io/balance',
-                color: '#3b82f6', 
-                colorTailwind: 'from-blue-500 to-cyan-600',
-                icon: 'fa-scale-balanced',
-                badge: 'Productivitat'
-            },
-            {
-                id: 'tempslimit',
-                title: 'Temps Límit',
-                category: 'Gestió del Temps',
-                description: 'Comptadors regressius i temporitzadors avançats per optimitzar la teva productivitat diària.',
-                url: 'https://mehillana.github.io/tempslimit',
-                color: '#f59e0b', 
-                colorTailwind: 'from-amber-400 to-orange-600',
-                icon: 'fa-hourglass-half',
-                badge: 'Temps Real'
+                badge: 'Proximitat'
             },
             {
                 id: 'clima',
                 title: 'Clima',
                 category: 'Meteorologia & Temps',
-                description: 'Consulta l\'estat del temps actual, previsions meteorològiques i condicions atmosfèriques a l\'instant.',
+                shortDesc: 'Estació meteorològica web d\'alta precisió amb previsions per hores i condicions atmosfèriques.',
+                fullDesc: 'Clima ofereix una lectura neta, ràpida i immediata de l\'estat atmosfèric actual i previsions detallades per hores. Dissenyada específicamente per planificar sortides a l\'aire lliure, excursions a la muntanya o activitats quotidianes amb informació meteorològica fiable i sense anuncis.',
+                objective: 'Anticipar-se als canvis del temps de manera senzilla i intuïtiva per millorar la planificació, la comoditat i la seguretat de les activitats diàries.',
+                whoIsItFor: 'Utilitari perfecte per a qui necessita consultar el temps ràpidament i amb un disseny visualment net i relaxant.',
                 url: 'https://mehillana.github.io/clima',
                 color: '#06b6d4', 
                 colorTailwind: 'from-cyan-400 to-blue-600',
@@ -260,131 +424,241 @@
                 badge: 'Atmosfera'
             },
             {
-                id: 'ruta',
-                title: 'Ruta',
-                category: 'Cartografia & Transport',
-                description: 'Planificació de trajectes, connexions de transport, caminades i rutes per moure\'t sense complicacions.',
-                url: 'https://mehillana.github.io/ruta',
-                color: '#84cc16', 
-                colorTailwind: 'from-lime-500 to-emerald-600',
-                icon: 'fa-map-location-dot',
-                badge: 'Mobilitat'
-            },
-            {
                 id: 'accesdirecte',
                 title: 'Accés directe',
                 category: 'Utilitats & Navegació',
-                description: 'Accés ràpid i directe a les teves adreces i dreceres preferides amb una cerca centralitzada.',
+                shortDesc: 'Llançador ràpid i centre de dreceres personalitzades per accelerar la productivitat diària.',
+                fullDesc: 'Accés directe centralitza en un únic tauler net, personalitzable i ordenat totes les adreces web, fitxers i recursos d\'ús freqüent, estalviant temps de cerca innecessari i mantenint l\'escriptori digital net i lliure de caòtiques pestanyes obertes.',
+                objective: 'Agilitzar al màxim la navegació i l\'accés quotidià als serveis digitals més importants de l\'usuari.',
+                whoIsItFor: 'Adreçat a qualsevol persona que vulgui optimitzar el seu temps i tenir totes les seves webs i recursos favorits a un sol clic.',
                 url: 'https://mehillana.github.io/accesdirecte',
-                color: '#111827', 
-                colorTailwind: 'from-gray-900 to-black',
-                icon: 'fa-magnifying-glass',
-                badge: 'Drecera'
+                color: '#3b82f6', 
+                colorTailwind: 'from-blue-600 to-indigo-700',
+                icon: 'fa-bolt',
+                badge: 'Productivitat'
             }
         ];
 
-        // Toggle Google-style app launcher dropdown
+        // Switch between pages in the SPA
+        function switchPage(pageId) {
+            document.querySelectorAll('.page-section').forEach(sec => sec.classList.remove('active'));
+            
+            const target = document.getElementById(`page-${pageId}`);
+            if (target) {
+                target.classList.add('active');
+            }
+
+            // Update nav buttons style
+            ['inici', 'sobre', 'funciona', 'apps'].forEach(nav => {
+                const btn = document.getElementById(`nav-${nav}`);
+                if (btn) {
+                    if (nav === pageId) {
+                        btn.className = "px-4 py-2 rounded-full transition-all text-gray-700 bg-white shadow-sm font-semibold";
+                    } else {
+                        btn.className = "px-4 py-2 rounded-full transition-all text-gray-600 hover:text-gray-900";
+                    }
+                }
+            });
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Open specific resource full explanatory page
+        function openResourcePage(appId) {
+            document.querySelectorAll('.page-section').forEach(sec => sec.classList.remove('active'));
+            const target = document.getElementById(`page-resource-${appId}`);
+            if (target) {
+                target.classList.add('active');
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Toggle app launcher dropdown
         function toggleAppLauncher() {
             const dropdown = document.getElementById('appLauncherDropdown');
             dropdown.classList.toggle('hidden-dropdown');
         }
 
-        // Close dropdown when clicking outside
         window.addEventListener('click', (e) => {
             const launcherBtn = document.getElementById('launcherBtn');
             const dropdown = document.getElementById('appLauncherDropdown');
-            if (!launcherBtn.contains(e.target) && !dropdown.contains(e.target)) {
+            if (launcherBtn && dropdown && !launcherBtn.contains(e.target) && !dropdown.contains(e.target)) {
                 dropdown.classList.add('hidden-dropdown');
             }
         });
 
-        // Render Application Cards & Workspace Launcher
-        function renderApps(filter = '') {
-            const grid = document.getElementById('appGrid');
-            const legend = document.getElementById('petalLegend');
+        // Render dynamic content
+        function renderAll() {
+            // Launcher dropdown items
             const launcherGrid = document.getElementById('launcherGridItems');
-            
-            const filtered = appsData.filter(app => 
-                app.title.toLowerCase().includes(filter.toLowerCase()) || 
-                app.description.toLowerCase().includes(filter.toLowerCase()) ||
-                app.category.toLowerCase().includes(filter.toLowerCase())
-            );
+            if (launcherGrid) {
+                launcherGrid.innerHTML = appsData.map(app => `
+                    <a href="${app.url}" target="_blank" 
+                       class="flex flex-col items-center justify-center p-3 rounded-2xl hover:bg-gray-100 transition-all group text-center">
+                        <div class="w-12 h-12 rounded-2xl bg-gradient-to-br ${app.colorTailwind} flex items-center justify-center text-white text-lg shadow-sm group-hover:scale-105 transition-transform">
+                            <i class="fa-solid ${app.icon}"></i>
+                        </div>
+                        <span class="text-xs font-medium text-gray-700 mt-2 truncate w-full group-hover:text-blue-600">${app.title}</span>
+                    </a>
+                `).join('');
+            }
 
-            document.getElementById('appCount').innerText = `${filtered.length} ${filtered.length === 1 ? 'app' : 'apps'}`;
-            document.getElementById('launcherAppCountBadge').innerText = `${appsData.length} Apps`;
-
-            // Render Google Workspace style launcher grid items
-            launcherGrid.innerHTML = appsData.map(app => `
-                <a href="${app.url}" target="_blank" 
-                   class="flex flex-col items-center justify-center p-3 rounded-2xl hover:bg-gray-100 transition-all group text-center">
-                    <div class="w-12 h-12 rounded-2xl bg-gradient-to-br ${app.colorTailwind} flex items-center justify-center text-white text-lg shadow-sm group-hover:scale-105 transition-transform">
-                        <i class="fa-solid ${app.icon}"></i>
-                    </div>
-                    <span class="text-xs font-medium text-gray-700 mt-2 truncate w-full group-hover:text-blue-600">${app.title}</span>
-                </a>
-            `).join('');
-
-            // Render Main Directory Grid
-            grid.innerHTML = filtered.map(app => `
-                <div class="bg-white rounded-3xl p-6 flex flex-col justify-between relative overflow-hidden border border-gray-200/80 shadow-sm hover:shadow-md transition-all duration-300 group">
-                    <div class="absolute right-0 top-0 w-32 h-32 rounded-bl-full opacity-5 pointer-events-none transition-all group-hover:opacity-10" style="background-color: ${app.color};"></div>
-                    
-                    <div class="relative z-10 space-y-4">
-                        <div class="flex items-center justify-between">
-                            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br ${app.colorTailwind} flex items-center justify-center text-white text-xl shadow-sm">
-                                <i class="fa-solid ${app.icon}"></i>
+            // Home preview grid (first 3 apps)
+            const homeGrid = document.getElementById('homeAppGrid');
+            if (homeGrid) {
+                homeGrid.innerHTML = appsData.slice(0, 3).map(app => `
+                    <div class="bg-white/90 backdrop-blur-md rounded-3xl p-6 flex flex-col justify-between border border-gray-200 shadow-sm hover:shadow-md transition-all group cursor-pointer" onclick="openResourcePage('${app.id}')">
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between">
+                                <div class="w-12 h-12 rounded-2xl bg-gradient-to-br ${app.colorTailwind} flex items-center justify-center text-white text-lg shadow-sm">
+                                    <i class="fa-solid ${app.icon}"></i>
+                                </div>
+                                <span class="text-[11px] font-semibold px-3 py-1 rounded-full bg-gray-100 text-gray-700">${app.badge}</span>
                             </div>
-                            <span class="text-xs font-semibold px-3 py-1 rounded-full bg-gray-100 text-gray-700">
-                                ${app.badge}
-                            </span>
+                            <div>
+                                <span class="text-[11px] font-medium text-gray-400 uppercase tracking-wider">${app.category}</span>
+                                <h4 class="text-lg font-bold text-gray-900 mt-1 group-hover:text-blue-600 transition-colors">${app.title}</h4>
+                                <p class="text-gray-600 text-xs mt-2 leading-relaxed line-clamp-2">${app.shortDesc}</p>
+                            </div>
                         </div>
-
-                        <div>
-                            <span class="text-xs font-medium text-gray-500 uppercase tracking-wider">${app.category}</span>
-                            <h4 class="text-xl font-bold text-gray-900 mt-1">
-                                ${app.title}
-                            </h4>
-                            <p class="text-gray-600 text-sm mt-2 line-clamp-2">
-                                ${app.description}
-                            </p>
+                        <div class="pt-4 mt-4 border-t border-gray-100 flex items-center justify-between text-xs font-semibold text-blue-600">
+                            <span>Llegir pàgina explicativa</span>
+                            <i class="fa-solid fa-arrow-right text-[10px]"></i>
                         </div>
                     </div>
+                `).join('');
+            }
 
-                    <div class="pt-6 relative z-10 flex items-center justify-between mt-4 border-t border-gray-100">
-                        <span class="text-xs font-mono text-gray-400">${app.url.replace('https://', '')}</span>
-                        <a href="${app.url}" target="_blank" 
-                            class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gray-100 hover:bg-blue-600 text-gray-800 hover:text-white font-medium text-xs transition-all duration-200">
-                            <span>Obrir App</span>
-                            <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
-                        </a>
+            // Directory grid
+            const dirGrid = document.getElementById('directoryAppGrid');
+            if (dirGrid) {
+                dirGrid.innerHTML = appsData.map(app => `
+                    <div class="bg-white rounded-3xl p-6 flex flex-col justify-between border border-gray-200 shadow-sm hover:shadow-md transition-all group">
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between">
+                                <div class="w-14 h-14 rounded-2xl bg-gradient-to-br ${app.colorTailwind} flex items-center justify-center text-white text-xl shadow-sm">
+                                    <i class="fa-solid ${app.icon}"></i>
+                                </div>
+                                <span class="text-xs font-semibold px-3 py-1 rounded-full bg-gray-100 text-gray-700">${app.badge}</span>
+                            </div>
+                            <div>
+                                <span class="text-xs font-medium text-gray-400 uppercase tracking-wider">${app.category}</span>
+                                <h4 class="text-xl font-bold text-gray-900 mt-1">${app.title}</h4>
+                                <p class="text-gray-600 text-sm mt-2 leading-relaxed">${app.shortDesc}</p>
+                            </div>
+                        </div>
+                        <div class="pt-6 mt-6 border-t border-gray-100 flex items-center justify-between gap-3">
+                            <button onclick="openResourcePage('${app.id}')" class="px-3.5 py-2 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium text-xs transition-colors">
+                                Explicació
+                            </button>
+                            <a href="${app.url}" target="_blank" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-medium text-xs transition-colors shadow-sm">
+                                <span>Obrir App</span>
+                                <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+                            </a>
+                        </div>
                     </div>
-                </div>
-            `).join('');
+                `).join('');
+            }
 
-            // Render Legend / Quick focus buttons
-            legend.innerHTML = appsData.map((app, index) => `
-                <button onclick="focusObject(${index})" class="bg-white border border-gray-200/80 p-3 rounded-2xl flex items-center gap-3 text-left hover:border-gray-300 hover:shadow-sm transition-all group">
-                    <div class="w-3.5 h-3.5 rounded-full flex-shrink-0 shadow-sm" style="background-color: ${app.color};"></div>
-                    <div class="truncate">
-                        <p class="text-xs font-bold text-gray-800 truncate group-hover:text-blue-600 transition-colors">${app.title}</p>
-                        <p class="text-[10px] text-gray-400 truncate">Element #${index + 1}</p>
-                    </div>
-                </button>
-            `).join('');
+            // Generate individual extended explanatory pages dynamically for each resource
+            const dynamicContainer = document.getElementById('dynamicResourcePages');
+            if (dynamicContainer) {
+                dynamicContainer.innerHTML = appsData.map(app => `
+                    <section id="page-resource-${app.id}" class="page-section">
+                        <div class="max-w-4xl mx-auto space-y-8 bg-white/90 backdrop-blur-md rounded-3xl p-8 md:p-12 border border-gray-200 shadow-sm">
+                            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between border-b border-gray-200 pb-6 gap-4">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-16 h-16 rounded-2xl bg-gradient-to-br ${app.colorTailwind} flex items-center justify-center text-white text-2xl shadow-md flex-shrink-0">
+                                        <i class="fa-solid ${app.icon}"></i>
+                                    </div>
+                                    <div>
+                                        <span class="text-xs font-bold uppercase tracking-wider text-gray-400">${app.category}</span>
+                                        <h2 class="text-2xl md:text-3xl font-extrabold text-gray-900">${app.title}</h2>
+                                    </div>
+                                </div>
+                                <span class="text-xs font-semibold px-3.5 py-1.5 rounded-full bg-blue-50 text-blue-600 border border-blue-200 shadow-xs">${app.badge}</span>
+                            </div>
+
+                            <div class="space-y-6 text-gray-700 text-sm md:text-base leading-relaxed">
+                                <div class="space-y-2">
+                                    <h3 class="text-lg font-bold text-gray-900 flex items-center gap-2"><i class="fa-solid fa-circle-info text-blue-600"></i> Què és i com funciona?</h3>
+                                    <p>${app.fullDesc}</p>
+                                </div>
+
+                                <div class="bg-gray-50 p-6 rounded-2xl border border-gray-200 space-y-2">
+                                    <h3 class="text-base font-bold text-gray-900 flex items-center gap-2"><i class="fa-solid fa-bullseye text-amber-600"></i> Objectiu Principal</h3>
+                                    <p class="text-xs md:text-sm text-gray-600 leading-relaxed">${app.objective}</p>
+                                </div>
+
+                                <div class="bg-gray-50 p-6 rounded-2xl border border-gray-200 space-y-2">
+                                    <h3 class="text-base font-bold text-gray-900 flex items-center gap-2"><i class="fa-solid fa-users text-purple-600"></i> Per a qui està pensat?</h3>
+                                    <p class="text-xs md:text-sm text-gray-600 leading-relaxed">${app.whoIsItFor}</p>
+                                </div>
+
+                                <div class="space-y-2 pt-2">
+                                    <h3 class="text-lg font-bold text-gray-900 flex items-center gap-2"><i class="fa-solid fa-seedling text-emerald-600"></i> Compromís Humà (Juliol 2026)</h3>
+                                    <p>Creada al juliol de 2026 dins del Paquet de Mehillana, aquesta eina forma part d'un compromís rigorós amb les persones: disseny net, respecte absolut per la intimitat, sense publicitat i totalment orientat a resoldre necessitats vitals reals.</p>
+                                </div>
+                            </div>
+
+                            <div class="pt-6 border-t border-gray-200 flex flex-col sm:flex-row items-center justify-between gap-4">
+                                <button onclick="switchPage('apps')" class="text-xs font-semibold text-gray-600 hover:text-gray-900">← Tornar al Directori d'Apps</button>
+                                <a href="${app.url}" target="_blank" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-medium text-xs transition-all shadow-md">
+                                    <span>Obrir Aplicació Directament</span>
+                                    <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </section>
+                `).join('');
+            }
         }
 
-        // Search listener
-        document.getElementById('searchInput').addEventListener('input', (e) => {
-            renderApps(e.target.value);
-        });
+        // Search handler across all apps
+        function handleSearchInput(query) {
+            if (!query.trim()) {
+                renderAll();
+                return;
+            }
+            switchPage('apps');
+            const filtered = appsData.filter(app => 
+                app.title.toLowerCase().includes(query.toLowerCase()) || 
+                app.shortDesc.toLowerCase().includes(query.toLowerCase()) ||
+                app.category.toLowerCase().includes(query.toLowerCase())
+            );
+            const dirGrid = document.getElementById('directoryAppGrid');
+            if (dirGrid) {
+                dirGrid.innerHTML = filtered.map(app => `
+                    <div class="bg-white rounded-3xl p-6 flex flex-col justify-between border border-gray-200 shadow-sm">
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between">
+                                <div class="w-14 h-14 rounded-2xl bg-gradient-to-br ${app.colorTailwind} flex items-center justify-center text-white text-xl shadow-sm">
+                                    <i class="fa-solid ${app.icon}"></i>
+                                </div>
+                                <span class="text-xs font-semibold px-3 py-1 rounded-full bg-gray-100 text-gray-700">${app.badge}</span>
+                            </div>
+                            <div>
+                                <span class="text-xs font-medium text-gray-400 uppercase tracking-wider">${app.category}</span>
+                                <h4 class="text-xl font-bold text-gray-900 mt-1">${app.title}</h4>
+                                <p class="text-gray-600 text-sm mt-2">${app.shortDesc}</p>
+                            </div>
+                        </div>
+                        <div class="pt-6 mt-6 border-t border-gray-100 flex items-center justify-between">
+                            <button onclick="openResourcePage('${app.id}')" class="px-3.5 py-2 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium text-xs">Explicació</button>
+                            <a href="${app.url}" target="_blank" class="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-medium text-xs">Obrir App</a>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
 
-        // Initialize Three.js 3D Background Scene (Geometric shapes)
+        // Initialize Three.js 3D Background Scene
         let scene, camera, renderer, group, meshes = [];
-        let targetedIndex = null;
-        let rotationSpeed = 0.003;
+        let rotationSpeed = 0.0025;
 
         function initThree() {
             const container = document.getElementById('canvas-container');
+            if (!container) return;
             
             scene = new THREE.Scene();
             camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -406,90 +680,44 @@
             scene.add(group);
 
             const count = appsData.length;
-            const radius = 4.5;
+            const radius = 4.8;
 
             appsData.forEach((app, i) => {
                 const angle = (i / count) * Math.PI * 2;
-                
                 const geo = new THREE.IcosahedronGeometry(1, 0);
                 const hexColor = parseInt(app.color.replace('#', '0x'));
-                const mat = new THREE.MeshStandardMaterial({
-                    color: hexColor,
-                    roughness: 0.3,
-                    metalness: 0.2,
-                    wireframe: false
-                });
+                const mat = new THREE.MeshStandardMaterial({ color: hexColor, roughness: 0.3, metalness: 0.2 });
 
                 const mesh = new THREE.Mesh(geo, mat);
-                
                 mesh.position.x = Math.cos(angle) * radius;
                 mesh.position.y = Math.sin(angle) * radius;
                 mesh.position.z = (Math.random() - 0.5) * 2;
-
-                mesh.userData = {
-                    baseAngle: angle,
-                    baseX: mesh.position.x,
-                    baseY: mesh.position.y,
-                    index: i
-                };
 
                 group.add(mesh);
                 meshes.push(mesh);
             });
 
-            window.addEventListener('resize', onWindowResize);
-            window.addEventListener('mousemove', onMouseMove);
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
 
             animate();
         }
 
-        let mouseX = 0;
-        let mouseY = 0;
-
-        function onMouseMove(event) {
-            mouseX = (event.clientX - window.innerWidth / 2) / (window.innerWidth / 2);
-            mouseY = (event.clientY - window.innerHeight / 2) / (window.innerHeight / 2);
-        }
-
-        function onWindowResize() {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        }
-
-        function focusObject(index) {
-            targetedIndex = index;
-            rotationSpeed = 0.001;
-            setTimeout(() => {
-                rotationSpeed = 0.003;
-                targetedIndex = null;
-            }, 3000);
-        }
-
-        let clock = new THREE.Clock();
-
         function animate() {
             requestAnimationFrame(animate);
-
-            const elapsedTime = clock.getElapsedTime();
-
             group.rotation.z += rotationSpeed;
-            group.rotation.x += (mouseY * 0.2 - group.rotation.x) * 0.05;
-            group.rotation.y += (mouseX * 0.2 - group.rotation.y) * 0.05;
-            
-            meshes.forEach((mesh, idx) => {
+            meshes.forEach((mesh) => {
                 mesh.rotation.x += 0.01;
                 mesh.rotation.y += 0.015;
-
-                const pulse = Math.sin(elapsedTime * 2 + idx) * 0.2;
-                mesh.scale.set(1 + pulse, 1 + pulse, 1 + pulse);
             });
-
             renderer.render(scene, camera);
         }
 
         window.onload = function() {
-            renderApps();
+            renderAll();
             initThree();
         };
     </script>

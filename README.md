@@ -1,74 +1,44 @@
-# 📦 Paquet d'Aplicacions de Mehillana
+# Paquet d'Aplicacions de Mehillana
 
-> Un ecosistema web centralitzat, lleuger i modular inspirat en les suites d'ofimàtica modernes, dissenyat des de zero per agrupar totes les eines, utilitats i aplicacions prèvies en un sol llançador unificat.
-
-[![GitHub license](https://img.shields.io/badge/license-MIT-indigo.svg)](https://github.com/mehillana/paquet/blob/main/LICENSE)
-[![HTML5](https://img.shields.io/badge/HTML5-Vanilla-orange.svg)](https://developer.mozilla.org/en-US/docs/Web/HTML)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind-CSS-38bdf8.svg)](https://tailwindcss.com)
-[![Status](https://img.shields.io/badge/Status-Actiu_%2F_%C3%80gil-success.svg)](https://mehillana.github.io/paquet)
+> **Ecosistema digital independent, humà i transparent per a les persones.** Creat el juliol de 2026[cite: 1].
 
 ---
 
-## 📸 Vista Prèvia de l'Ecosistema
+## 🌟 Sobre el Projecte
 
-<p align="center">
-  <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=1200&auto=format&fit=crop" alt="Paquet de Mehillana Dashboard" width="100%" style="border-radius: 16px; box-shadow: 0 12px 30px rgba(0,0,0,0.12);">
-</p>
+El **Paquet d'Aplicacions de Mehillana** és un conjunt d'eines digitals minimalistes dissenyades per millorar el benestar emocional, acompanyar en moments vitals, organitzar la vida quotidiana i simplificar la relació amb la tecnologia[cite: 1]. En un entorn dominat per interfícies agressives i publicitat intrusiva, Mehillana ofereix un refugi digital basat en la calma, la privacitat i la utilitat pràctica[cite: 1].
 
 ---
 
-## 📜 Història i Origen del Projecte
+## 🛠️ Les 6 Eines del Paquet
 
-El **Paquet d'Aplicacions de Mehillana** va néixer de la necessitat de centralitzar i donar coherència visual i funcional a un conjunt creixent de microaplicacions web desenvolupades de manera independent. 
+El ecosistema inclou sis aplicacions web independents interconnexes:
 
-Originàriament, cada aplicació (com ara eines de càlcul, gestors de mercat, llibres de receptes, arxius de memòria i utilitats de navegació) vivia en repositoris i enllaços separats. A mesura que l'ecosistema de projectes personals va créixer, es va concebre un **llançador centralitzat** inspirat en la comoditat de les grans suites d'ofimàtica, però mantènint una filosofia radicalment diferents: **sense dependències de grans corporacions, totalment privat, lleuger i basat en estàndards web purs (HTML, CSS i JavaScript).**
-
-Avui en dia, el Paquet funciona com el portal d'entrada principal a tot l'univers creatiu i tecnològic de Mehillana, connectant de manera fluida aplicacions d'utilitat diària, oci i productivitat.
-
----
-
-## 🚀 Aplicacions Integrades a la Suite
-
-El paquet s'estructura com un directori unificat des d'on es pot accedir a tot l'ecosistema d'aplicacions germanes:
-
-| Aplicació | Descripció | Estat |
-| :--- | :--- | :--- |
-| **Accés Directe** | Navegador privat i gestor de marcadors per accedir a webs sense cercadors intermediaris. | 🟢 Actiu |
-| **Espai Memòria** | Arxiu digital de records, històries i suport a la memòria amb un enfocament íntim i privat. | 🟢 Actiu |
-| **Nyambook** | Llibreta digital personalitzada de receptes culinàries i tradicions gastronòmiques. | 🟢 Actiu |
-| **Anem al Mercat** | Utilitat pràctica per a la gestió de compres setmanals i comerç de proximitat. | 🟢 Actiu |
-| **Clima & Ruta** | Eines de meteorologia local, cartografia i planificació de desplaçaments i rutes. | 🟢 Actiu |
-| **Balance** | Una app per gestionar despeses. | 🟢 Actiu |
-| **Màgia** | Eines de relaxació, música i color. | 🟢 Actiu |
-| **Accés Directe** | Crecador responsable sense dependre d'altres. | 🟢 Actiu |
+*   **Ànsia** (`Benestar & Salut Mental`)[cite: 1]: Plataforma especialitzada per gestionar l'ansietat amb exercicis de respiració guiada (com la tècnica 4-7-8) i pautes de calma[cite: 1].
+*   **Espai Memòria** (`Refugi & Gestió del Dol`)[cite: 1]: Un refugi digital íntim i acollidor per transitar el procés del dol, redactar reflexions i preservar records significatius[cite: 1].
+*   **Nyambook** (`Receptes & Cuina`)[cite: 1]: Llibre de receptes digital interactiu per organitzar ingredients, calcular proporcions segons comensals i seguir passes de cuina[cite: 1].
+*   **Anem al Mercat** (`Compres & Producte Local`)[cite: 1]: Assistent intel·ligent per organitzar la llista de la compra per parades i fomentar el consum de proximitat[cite: 1].
+*   **Clima** (`Meteorologia & Temps`)[cite: 1]: Estació meteorològica web d'alta precisió amb previsions per hores i condicions atmosfèriques netes de publicitat[cite: 1].
+*   **Accés directe** (`Utilitats & Navegació`)[cite: 1]: Llançador ràpid i centre de dreceres personalitzades per accelerar la productivitat diària i evitar pestanyes caòtiques[cite: 1].
 
 ---
 
-## ✨ Característiques Principals
+## 🏗️ Característiques Tècniques & Arquitectura
 
-* **Disseny Modular Unificat:** Interfície neta i coherent basada en targetes interactives amb una paleta de colors harmònica i tipografies modernes.
-* **Accés Instantani:** Enllaços directes a qualsevol aplicació de la suite amb un sol clic, optimitzats tant per a ordinador com per a dispositius mòbils.
-* **Rendiment Extremadament Lleuger:** Sense frameworks pesats del costat del servidor; tot funciona directament al navegador de l'usuari mitjançant fitxers estàtics allotjats a GitHub Pages.
-* **Filtres i Cerca Ràpida:** Sistema de classificació per categories per trobar qualsevol eina de la suite a l'instant.
-* **Privacitat Absoluta:** Zero rastrejadors externs, sense cookies publicitàries i amb emmagatzematge local (`localStorage`) quan és necessari.
+Aquest projecte està construït com una **Single Page Application (SPA)** modular i lleugera[cite: 1]:
 
----
-
-## 🛠️ Stack Tecnològic
-
-* **Estructura:** HTML5 semàntic.
-* **Estils:** Tailwind CSS (via CDN) per a un disseny totalment adaptatiu (*responsive*).
-* **Interactivitat:** JavaScript modern (ES6+) per a la gestió de estats, filtres i interfícies dinàmiques.
-* **Iconografia:** FontAwesome 6 per a icones vectorials netes.
-* **Tipografia:** Google Sans i Inter.
-* **Allotjament:** GitHub Pages (`mehillana.github.io/paquet`).
+*   **Frontend**: HTML5, amb estils i disseny basats en **Tailwind CSS**[cite: 1].
+*   **Efectes Visuals**: Integració de **Three.js** per generar un fons interactiu en 3D amb animacions de nodes i partícules[cite: 1].
+*   **Navegació Google-Style**: Incorpora un llançador ràpid tipus graella desplegable i una barra de cerca global interactiva en temps real[cite: 1].
+*   **Iconografia**: FontAwesome 6.4.0[cite: 1].
+*   **Tipografia**: Google Sans & Inter[cite: 1].
 
 ---
 
-## 📦 Estructura del Projecte
+## 🚀 Com Executar-ho Localment
 
-```text
-paquet/
-├── index.html          # Llançador central i panell principal
-├── README.md           # Documentació oficial del projecte
-└── LICENSE             # Llicència de codi obert (MIT)
+Com que es tracta d'una aplicació web estàtica basada en estàndards oberts, no requereix complexos servidors de backend[cite: 1]:
+
+1. Clona o descarrega aquest repositori a la teva màquina local.
+2. Obre el fitxer principal (`index.html`) directament amb qualsevol navegador web modern (Google Chrome, Firefox, Safari, Edge).
+3. Gaudeix de l'ecosistema de Mehillana!
